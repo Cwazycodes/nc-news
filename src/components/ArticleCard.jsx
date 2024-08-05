@@ -1,6 +1,8 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const ArticleCard = ({
+article_id,
   title,
   author,
   topic,
@@ -13,7 +15,7 @@ const ArticleCard = ({
     <div className="article-card">
       <img src={article_img_url} alt={title} className="article-image" />
       <div className="article-content">
-        <h2>{title}</h2>
+        <h2><Link to={`/articles/${article_id}`}>{title}</Link></h2>
         <p>by {author}</p>
         <p>Topic: {topic}</p>
         <p>{new Date(created_at).toLocaleDateString()}</p>
