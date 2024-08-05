@@ -11,7 +11,7 @@ const ArticleList = () => {
     axios
       .get("https://cwazycodes-nc-news.onrender.com/api/articles")
       .then((response) => {
-        console.log(response.data);
+
         setArticles(response.data.articles);
         setLoading(false);
       })
