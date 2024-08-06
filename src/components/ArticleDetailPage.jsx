@@ -1,6 +1,8 @@
 import React, {useState, useEffect} from 'react'
 import { useParams } from 'react-router-dom'
 import axios from 'axios'
+import CommentList from './CommentList'
+CommentList
 
 const ArticleDetailPage = () => {
     const {article_id} = useParams()
@@ -19,7 +21,7 @@ const ArticleDetailPage = () => {
             setError(err.message)
             setLoading(false)
         })
-    }, [article_id])
+    }, [])
 
     if (loading) return <p>Loading article...</p>
     if (error) return <p>Error: {error}</p>
@@ -36,6 +38,7 @@ const ArticleDetailPage = () => {
             <span>Votes: {article.votes}</span>
             <span> Comments: {article.comment_count}</span>
         </div>
+        <CommentList article_id={article_id} />
     </div>
   )
 }
