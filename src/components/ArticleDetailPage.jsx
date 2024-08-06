@@ -13,8 +13,9 @@ const ArticleDetailPage = () => {
   const [voteLoading, setVoteLoading] = useState(false);
   const [voteError, setVoteError] = useState(null);
   const [userVote, setUserVote] = useState(0);
-  const [selectedUser, setSelectedUser] = useState("");
+  const [selectedUser, setSelectedUser] = useState('');
   const [users, setUsers] = useState([]);
+  const [comments, setComments] = useState([]); 
 
   useEffect(() => {
     axios
@@ -34,11 +35,11 @@ const ArticleDetailPage = () => {
     fetchUsers()
       .then((users) => {
         setUsers(users);
-        setSelectedUser(users[0]?.username || "");
+        setSelectedUser(users[0]?.username || ''); 
       })
       .catch((err) => {
         console.error(err);
-        setError("Failed to load users. Please try again.");
+        setError('Failed to load users. Please try again.');
       });
   }, []);
 
@@ -60,7 +61,7 @@ const ArticleDetailPage = () => {
     voteOnArticle(article_id, voteAdjustment)
       .then(() => {
         setVoteLoading(false);
-        setUserVote(userVote === inc_votes ? 0 : inc_votes);
+        setUserVote(userVote === inc_votes ? 0 : inc_votes); 
       })
       .catch((err) => {
         console.error(err);
@@ -74,6 +75,7 @@ const ArticleDetailPage = () => {
   };
 
   const handleCommentPosted = (newComment) => {
+    setComments((currentComments) => [newComment, ...currentComments]); 
     setArticle((currentArticle) => ({
       ...currentArticle,
       comment_count: currentArticle.comment_count + 1,
@@ -120,17 +122,10 @@ const ArticleDetailPage = () => {
         </button>
       </div>
       {voteError && <p className="error">{voteError}</p>}
-
+      
       <div className="user-select-container">
-        <label htmlFor="user-select" className="user-select-label">
-          Select User:{" "}
-        </label>
-        <select
-          id="user-select"
-          value={selectedUser}
-          onChange={handleUserChange}
-          className="user-select-dropdown"
-        >
+        <label htmlFor="user-select" className="user-select-label">Select User: </label>
+        <select id="user-select" value={selectedUser} onChange={handleUserChange} className="user-select-dropdown">
           {users.map((user) => (
             <option key={user.username} value={user.username}>
               {user.username}
@@ -138,13 +133,13 @@ const ArticleDetailPage = () => {
           ))}
         </select>
       </div>
-
+      
       <CommentForm
         article_id={article_id}
         username={selectedUser}
         onCommentPosted={handleCommentPosted}
       />
-      <CommentList article_id={article_id} />
+      <CommentList article_id={article_id} comments={comments} username={selectedUser} setComments={setComments} />
     </div>
   );
 };

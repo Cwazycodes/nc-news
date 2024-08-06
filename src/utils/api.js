@@ -51,9 +51,19 @@ export const postComment = (article_id, username, body) => {
 };
 
 export const fetchUsers = () => {
-    return api.get('/users')
-    .then(response => response.data.users)
-    .catch(error => {
-        throw error;
-    })
-}
+  return api
+    .get("/users")
+    .then((response) => response.data.users)
+    .catch((error) => {
+      throw error;
+    });
+};
+
+export const deleteComment = (comment_id) => {
+  return api
+    .delete(`/comments/${comment_id}`)
+    .then((response) => response.data)
+    .catch((error) => {
+      throw error;
+    });
+};

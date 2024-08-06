@@ -1,24 +1,46 @@
 import React, { useState, useEffect } from "react";
 import CommentCard from "./CommentCard";
-import { fetchComments } from "../utils/api";
+import { fetchComments, deleteComment } from "../utils/api";
 
-const CommentList = ({ article_id }) => {
-  const [comments, setComments] = useState([]);
+const CommentList = ({ article_id, username, comments, setComments }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
-    fetchComments(article_id)
-      .then((commentsData) => {
-        setComments(commentsData);
-        setLoading(false);
+    if (comments.length === 0) {
+      fetchComments(article_id)
+        .then((commentsData) => {
+          setComments(commentsData);
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.error(err);
+          setError("Failed to load comments. Please try again.");
+          setLoading(false);
+        });
+    } else {
+      setLoading(false);
+    }
+  }, [article_id, comments, setComments]);
+
+  const handleDelete = (comment_id) => {
+    if (deleting) return;
+    setDeleting(true);
+
+    deleteComment(comment_id)
+      .then(() => {
+        setComments((currentComments) =>
+          currentComments.filter((comment) => comment.comment_id !== comment_id)
+        );
+        setDeleting(false);
       })
       .catch((err) => {
         console.error(err);
-        setError("Failed to load comments. Please try again.");
-        setLoading(false);
+        setError("Failed to delete comment. Please try again.");
+        setDeleting(false);
       });
-  }, [article_id]);
+  };
 
   if (loading) return <p>Loading comments...</p>;
   if (error) return <p>{error}</p>;
@@ -27,7 +49,12 @@ const CommentList = ({ article_id }) => {
   return (
     <div className="comment-list">
       {comments.map((comment) => (
-        <CommentCard key={comment.comment_id} {...comment} />
+        <CommentCard
+          key={comment.comment_id}
+          {...comment}
+          username={username}
+          onDelete={handleDelete}
+        />
       ))}
     </div>
   );

@@ -159,6 +159,19 @@ body {
   color: #555;
 }
 
+.delete-button {
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.delete-button:hover {
+  background-color: darkred;
+}
+
 .no-comments {
   font-style: italic;
   color: #555;
@@ -200,6 +213,7 @@ button.voted {
   border: 1px solid #ccc;
   font-size: 1em;
 }
+
 @media (min-width: 600px) {
   .article-list {
     flex-direction: row;
