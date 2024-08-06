@@ -14,17 +14,46 @@ export const fetchArticles = () => {
 };
 
 export const fetchComments = (article_id) => {
-    return api.get(`/articles/${article_id}/comments`)
-    .then(response => response.data.comments)
-    .catch(error => {
-        throw error
+  return api
+    .get(`/articles/${article_id}/comments`)
+    .then((response) => {
+      if (response.data.comments.length === 0) {
+        return [];
+      }
+      return response.data.comments;
     })
-}
+    .catch((error) => {
+      if (error.response && error.response.status === 404) {
+        return [];
+      } else {
+        throw error;
+      }
+    });
+};
 
 export const voteOnArticle = (article_id, inc_votes) => {
-    return api.patch(`/articles/${article-id}`, {inc_votes})
-    .then(response => response.data.article)
+  return api
+    .patch(`/articles/${article_id}`, { inc_votes })
+    .then((response) => response.data.article)
+    .catch((error) => {
+      throw error;
+    });
+};
+
+export const postComment = (article_id, username, body) => {
+  return api
+    .post(`/articles/${article_id}/comments`, { username, body })
+    .then((response) => response.data.comment)
+    .catch((error) => {
+      console.error("Error posting comments:", error);
+      throw error;
+    });
+};
+
+export const fetchUsers = () => {
+    return api.get('/users')
+    .then(response => response.data.users)
     .catch(error => {
-        throw error
+        throw error;
     })
 }
