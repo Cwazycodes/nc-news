@@ -13,7 +13,7 @@ article_id,
 }) => {
   return (
     <div className="article-card">
-      <img src={article_img_url} alt={title} className="article-image" />
+      <img src={article_img_url} alt={`Image relating to ${topic}`} className="article-image" />
       <div className="article-content">
         <h2><Link to={`/articles/${article_id}`}>{title}</Link></h2>
         <p>by {author}</p>
