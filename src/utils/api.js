@@ -20,3 +20,11 @@ export const fetchComments = (article_id) => {
         throw error
     })
 }
+
+export const voteOnArticle = (article_id, inc_votes) => {
+    return api.patch(`/articles/${article-id}`, {inc_votes})
+    .then(response => response.data.article)
+    .catch(error => {
+        throw error
+    })
+}
