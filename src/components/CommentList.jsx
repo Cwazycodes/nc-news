@@ -2,11 +2,10 @@ import React, { useState, useEffect } from "react";
 import CommentCard from "./CommentCard";
 import { fetchComments, deleteComment } from "../utils/api";
 
-const CommentList = ({ article_id, loggedInUser, comments, setComments }) => {
+const CommentList = ({ article_id, username, comments, setComments }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [deleting, setDeleting] = useState(false);
-  const [deleteSuccess, setDeleteSuccess] = useState(null);
 
   useEffect(() => {
     if (comments.length === 0) {
@@ -28,7 +27,6 @@ const CommentList = ({ article_id, loggedInUser, comments, setComments }) => {
   const handleDelete = (comment_id) => {
     if (deleting) return;
     setDeleting(true);
-    setDeleteSuccess(null);
 
     deleteComment(comment_id)
       .then(() => {
@@ -36,7 +34,6 @@ const CommentList = ({ article_id, loggedInUser, comments, setComments }) => {
           currentComments.filter((comment) => comment.comment_id !== comment_id)
         );
         setDeleting(false);
-        setDeleteSuccess("Comment deleted successfully.");
       })
       .catch((err) => {
         console.error(err);
@@ -51,12 +48,11 @@ const CommentList = ({ article_id, loggedInUser, comments, setComments }) => {
 
   return (
     <div className="comment-list">
-      {deleteSuccess && <p className="success">{deleteSuccess}</p>}
       {comments.map((comment) => (
         <CommentCard
           key={comment.comment_id}
           {...comment}
-          loggedInUser={loggedInUser}
+          username={username}
           onDelete={handleDelete}
         />
       ))}

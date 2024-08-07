@@ -3,9 +3,9 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import CommentList from "./CommentList";
 import CommentForm from "./CommentForm";
-import { voteOnArticle } from "../utils/api";
+import { voteOnArticle, fetchUsers } from "../utils/api";
 
-const ArticleDetailPage = ({ loggedInUser }) => {
+const ArticleDetailPage = () => {
   const { article_id } = useParams();
   const [article, setArticle] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -13,6 +13,8 @@ const ArticleDetailPage = ({ loggedInUser }) => {
   const [voteLoading, setVoteLoading] = useState(false);
   const [voteError, setVoteError] = useState(null);
   const [userVote, setUserVote] = useState(0);
+  const [selectedUser, setSelectedUser] = useState('');
+  const [users, setUsers] = useState([]);
   const [comments, setComments] = useState([]); 
 
   useEffect(() => {
@@ -29,6 +31,18 @@ const ArticleDetailPage = ({ loggedInUser }) => {
       });
   }, [article_id]);
 
+  useEffect(() => {
+    fetchUsers()
+      .then((users) => {
+        setUsers(users);
+        setSelectedUser(users[0]?.username || ''); 
+      })
+      .catch((err) => {
+        console.error(err);
+        setError('Failed to load users. Please try again.');
+      });
+  }, []);
+
   const handleVote = (inc_votes) => {
     if (voteLoading) return;
     setVoteLoading(true);
@@ -36,7 +50,7 @@ const ArticleDetailPage = ({ loggedInUser }) => {
 
     let voteAdjustment = inc_votes;
     if (userVote === inc_votes) {
-      voteAdjustment = -inc_votes; 
+      voteAdjustment = -inc_votes;
     }
 
     setArticle((currentArticle) => ({
@@ -66,6 +80,10 @@ const ArticleDetailPage = ({ loggedInUser }) => {
       ...currentArticle,
       comment_count: currentArticle.comment_count + 1,
     }));
+  };
+
+  const handleUserChange = (event) => {
+    setSelectedUser(event.target.value);
   };
 
   if (loading) return <p>Loading article...</p>;
@@ -105,12 +123,23 @@ const ArticleDetailPage = ({ loggedInUser }) => {
       </div>
       {voteError && <p className="error">{voteError}</p>}
       
+      <div className="user-select-container">
+        <label htmlFor="user-select" className="user-select-label">Select User: </label>
+        <select id="user-select" value={selectedUser} onChange={handleUserChange} className="user-select-dropdown">
+          {users.map((user) => (
+            <option key={user.username} value={user.username}>
+              {user.username}
+            </option>
+          ))}
+        </select>
+      </div>
+      
       <CommentForm
         article_id={article_id}
-        username={loggedInUser}
+        username={selectedUser}
         onCommentPosted={handleCommentPosted}
       />
-      <CommentList article_id={article_id} comments={comments} loggedInUser={loggedInUser} setComments={setComments} />
+      <CommentList article_id={article_id} comments={comments} username={selectedUser} setComments={setComments} />
     </div>
   );
 };
