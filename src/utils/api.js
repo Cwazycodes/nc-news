@@ -4,9 +4,11 @@ const api = axios.create({
   baseURL: "https://cwazycodes-nc-news.onrender.com/api",
 });
 
-export const fetchArticles = () => {
+export const fetchArticles = (topic, sort_by = "created_at", order = "desc") => {
+  const params = {sort_by, order}
+  if (topic) params.topic = topic
   return api
-    .get("/articles")
+    .get("/articles", { params })
     .then((response) => response.data.articles)
     .catch((error) => {
       throw error;
@@ -67,3 +69,13 @@ export const deleteComment = (comment_id) => {
       throw error;
     });
 };
+
+export const fetchTopics = () => {
+  return api
+  .get("/topics")
+  .then((response) => response.data.topics)
+  .catch((error) => {
+    throw error;
+  });
+};
+

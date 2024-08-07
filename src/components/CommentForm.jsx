@@ -4,7 +4,7 @@ import { postComment } from '../utils/api';
 const CommentForm = ({ article_id, username, onCommentPosted }) => {
   const [body, setBody] = useState('');
   const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [isPosting, setIsPosting] = useState(false);
   const [success, setSuccess] = useState(false);
 
   const handleSubmit = (e) => {
@@ -14,7 +14,7 @@ const CommentForm = ({ article_id, username, onCommentPosted }) => {
       return;
     }
 
-    setLoading(true);
+    setIsPosting(true);
     setError(null);
     setSuccess(false);
 
@@ -23,12 +23,12 @@ const CommentForm = ({ article_id, username, onCommentPosted }) => {
         setBody('');
         setSuccess(true);
         onCommentPosted(comment);
-        setLoading(false);
+        setIsPosting(false);
       })
       .catch((err) => {
         console.error('Error posting comment:', err);
         setError('Failed to post comment. Please try again.');
-        setLoading(false);
+        setIsPosting(false);
       });
   };
 
@@ -38,9 +38,9 @@ const CommentForm = ({ article_id, username, onCommentPosted }) => {
         value={body}
         onChange={(e) => setBody(e.target.value)}
         placeholder="Write your comment here..."
-        disabled={loading}
+        disabled={isPosting}
       />
-      <button type="submit" disabled={loading}>Post Comment</button>
+      <button type="submit" disabled={isPosting}>Post Comment</button>
       {error && <p className="error">{error}</p>}
       {success && <p className="success">Comment posted successfully!</p>}
     </form>

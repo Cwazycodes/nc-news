@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import { fetchTopics } from "../utils/api";
 
 const TopicList = () => {
   const [topics, setTopics] = useState([]);
@@ -8,10 +8,9 @@ const TopicList = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    axios
-      .get("https://cwazycodes-nc-news.onrender.com/api/topics")
-      .then((response) => {
-        setTopics(response.data.topics);
+   fetchTopics()
+      .then((topicsData) => {
+        setTopics(topicsData);
         setLoading(false);
       })
       .catch((err) => {
