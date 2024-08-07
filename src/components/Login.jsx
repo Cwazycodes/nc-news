@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import { fetchUsers } from "../utils/api";
 
 const Login = ({ onLogin }) => {
   const [users, setUsers] = useState([]);
@@ -8,11 +8,10 @@ const Login = ({ onLogin }) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    axios
-      .get("https://cwazycodes-nc-news.onrender.com/api/users")
-      .then((response) => {
-        setUsers(response.data.users);
-        setSelectedUser(response.data.users[0]?.username || "");
+   fetchUsers()
+      .then((usersData) => {
+        setUsers(usersData);
+        setSelectedUser(usersData[0]?.username || "");
         setLoading(false);
       })
       .catch((err) => {
@@ -22,7 +21,8 @@ const Login = ({ onLogin }) => {
       });
   }, []);
 
-  const handleLogin = () => {
+  const handleLogin = (event) => {
+    event.preventDefault()
     onLogin(selectedUser);
   };
 
@@ -35,6 +35,7 @@ const Login = ({ onLogin }) => {
       <select
         value={selectedUser}
         onChange={(e) => setSelectedUser(e.target.value)}
+        required
       >
         {users.map((user) => (
           <option key={user.username} value={user.username}>
