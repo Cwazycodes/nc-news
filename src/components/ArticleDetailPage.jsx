@@ -4,6 +4,7 @@ import axios from "axios";
 import CommentList from "./CommentList";
 import CommentForm from "./CommentForm";
 import { voteOnArticle } from "../utils/api";
+import NotFound from "./NotFound"; 
 
 const ArticleDetailPage = ({ loggedInUser }) => {
   const { article_id } = useParams();
@@ -13,7 +14,7 @@ const ArticleDetailPage = ({ loggedInUser }) => {
   const [voteLoading, setVoteLoading] = useState(false);
   const [voteError, setVoteError] = useState(null);
   const [userVote, setUserVote] = useState(0);
-  const [comments, setComments] = useState([]); 
+  const [comments, setComments] = useState([]);
 
   useEffect(() => {
     axios
@@ -24,7 +25,11 @@ const ArticleDetailPage = ({ loggedInUser }) => {
       })
       .catch((err) => {
         console.error(err);
-        setError("Failed to load the article. Please try again later.");
+        if (err.response && err.response.status === 404) {
+          setError("Article not found."); 
+        } else {
+          setError("Failed to load the article. Please try again later.");
+        }
         setLoading(false);
       });
   }, [article_id]);
@@ -36,7 +41,7 @@ const ArticleDetailPage = ({ loggedInUser }) => {
 
     let voteAdjustment = inc_votes;
     if (userVote === inc_votes) {
-      voteAdjustment = -inc_votes; 
+      voteAdjustment = -inc_votes;
     }
 
     setArticle((currentArticle) => ({
@@ -47,7 +52,7 @@ const ArticleDetailPage = ({ loggedInUser }) => {
     voteOnArticle(article_id, voteAdjustment)
       .then(() => {
         setVoteLoading(false);
-        setUserVote(userVote === inc_votes ? 0 : inc_votes); 
+        setUserVote(userVote === inc_votes ? 0 : inc_votes);
       })
       .catch((err) => {
         console.error(err);
@@ -61,7 +66,7 @@ const ArticleDetailPage = ({ loggedInUser }) => {
   };
 
   const handleCommentPosted = (newComment) => {
-    setComments((currentComments) => [newComment, ...currentComments]); 
+    setComments((currentComments) => [newComment, ...currentComments]);
     setArticle((currentArticle) => ({
       ...currentArticle,
       comment_count: currentArticle.comment_count + 1,
@@ -69,6 +74,7 @@ const ArticleDetailPage = ({ loggedInUser }) => {
   };
 
   if (loading) return <p>Loading article...</p>;
+  if (error && error === "Article not found.") return <NotFound />;
   if (error) return <p role="alert" className="error">{error}</p>;
 
   return (
@@ -110,13 +116,18 @@ const ArticleDetailPage = ({ loggedInUser }) => {
         </button>
       </div>
       {voteError && <p role="alert" className="error">{voteError}</p>}
-      
+
       <CommentForm
         article_id={article_id}
         username={loggedInUser}
         onCommentPosted={handleCommentPosted}
       />
-      <CommentList article_id={article_id} comments={comments} loggedInUser={loggedInUser} setComments={setComments} />
+      <CommentList
+        article_id={article_id}
+        comments={comments}
+        loggedInUser={loggedInUser}
+        setComments={setComments}
+      />
     </article>
   );
 };
