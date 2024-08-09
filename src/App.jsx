@@ -35,7 +35,12 @@ const App = () => {
       <ErrorBoundary>
         <div className="app">
           <Header loggedInUser={loggedInUser} onLogout={handleLogout} />
-          <main id="main-content" role="main">
+          {!loggedInUser && (
+            <div className="api-load-note">
+              <p>Please note: The API may take a while to load initially.</p>
+            </div>
+          )}
+          <main>
             {!loggedInUser ? (
               <Login onLogin={handleLogin} />
             ) : (
@@ -45,10 +50,7 @@ const App = () => {
                   element={<ArticleDetailPage loggedInUser={loggedInUser} />}
                   path="/articles/:article_id"
                 />
-                <Route
-                  path="/topics/:topic_slug"
-                  element={<ArticleList />}
-                />
+                <Route path="/topics/:topic_slug" element={<ArticleList />} />
                 <Route path="/topics" element={<TopicList />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
