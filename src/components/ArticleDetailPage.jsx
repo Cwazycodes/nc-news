@@ -24,7 +24,7 @@ const ArticleDetailPage = ({ loggedInUser }) => {
       })
       .catch((err) => {
         console.error(err);
-        setError(err.message);
+        setError("Failed to load the article. Please try again later.");
         setLoading(false);
       });
   }, [article_id]);
@@ -69,29 +69,34 @@ const ArticleDetailPage = ({ loggedInUser }) => {
   };
 
   if (loading) return <p>Loading article...</p>;
-  if (error) return <p>Error: {error}</p>;
+  if (error) return <p role="alert" className="error">{error}</p>;
 
   return (
-    <div className="article-detail">
+    <article className="article-detail">
       <h1>{article.title}</h1>
       <img
         src={article.article_img_url}
         alt={`Image relating to ${article.topic}`}
         className="article-image"
       />
-      <p>by {article.author}</p>
-      <p>Topic: {article.topic}</p>
-      <p>{new Date(article.created_at).toLocaleDateString()}</p>
+      <p><strong>by {article.author}</strong></p>
+      <p><strong>Topic:</strong> {article.topic}</p>
+      <p>
+        <time dateTime={new Date(article.created_at).toISOString()}>
+          {new Date(article.created_at).toLocaleDateString()}
+        </time>
+      </p>
       <p>{article.body}</p>
       <div className="article-stats">
-        <span>Votes: {article.votes}</span>
-        <span> Comments: {article.comment_count}</span>
+        <span aria-live="polite">Votes: {article.votes}</span>
+        <span aria-live="polite">Comments: {article.comment_count}</span>
       </div>
       <div className="vote-buttons">
         <button
           onClick={() => handleVote(1)}
           disabled={voteLoading}
           className={userVote === 1 ? "voted" : ""}
+          aria-label="Upvote this article"
         >
           Upvote
         </button>
@@ -99,11 +104,12 @@ const ArticleDetailPage = ({ loggedInUser }) => {
           onClick={() => handleVote(-1)}
           disabled={voteLoading}
           className={userVote === -1 ? "voted" : ""}
+          aria-label="Downvote this article"
         >
           Downvote
         </button>
       </div>
-      {voteError && <p className="error">{voteError}</p>}
+      {voteError && <p role="alert" className="error">{voteError}</p>}
       
       <CommentForm
         article_id={article_id}
@@ -111,7 +117,7 @@ const ArticleDetailPage = ({ loggedInUser }) => {
         onCommentPosted={handleCommentPosted}
       />
       <CommentList article_id={article_id} comments={comments} loggedInUser={loggedInUser} setComments={setComments} />
-    </div>
+    </article>
   );
 };
 

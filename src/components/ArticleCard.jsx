@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 const ArticleCard = ({
-article_id,
+  article_id,
   title,
   author,
   topic,
@@ -12,19 +12,35 @@ article_id,
   article_img_url,
 }) => {
   return (
-    <div className="article-card">
-      <img src={article_img_url} alt={`Image relating to ${topic}`} className="article-image" />
+    <article className="article-card">
+      <img
+        src={article_img_url}
+        alt={`Illustration related to ${topic}`}
+        className="article-image"
+      />
       <div className="article-content">
-        <h2><Link to={`/articles/${article_id}`}>{title}</Link></h2>
-        <p>by {author}</p>
-        <p>Topic: {topic}</p>
-        <p>{new Date(created_at).toLocaleDateString()}</p>
+        <h2>
+          <Link to={`/articles/${article_id}`}>{title}</Link>
+        </h2>
+        <p>
+          <span className="sr-only">Author:</span> {author}
+        </p>
+        <p>
+          <span className="sr-only">Topic:</span> {topic}
+        </p>
+        <p>
+          <time dateTime={new Date(created_at).toISOString()}>
+            {new Date(created_at).toLocaleDateString()}
+          </time>
+        </p>
         <div className="article-stats">
-          <span>Votes: {votes}</span>
-          <span> Comments: {comment_count}</span>
+          <span aria-label={`${votes} votes`}>Votes: {votes}</span>
+          <span aria-label={`${comment_count} comments`}>
+            Comments: {comment_count}
+          </span>
         </div>
       </div>
-    </div>
+    </article>
   );
 };
 

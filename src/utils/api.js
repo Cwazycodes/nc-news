@@ -18,19 +18,23 @@ export const fetchArticles = (topic, sort_by = "created_at", order = "desc") => 
 export const fetchComments = (article_id) => {
   return api
     .get(`/articles/${article_id}/comments`)
-    .then((response) => {
-      if (response.data.comments.length === 0) {
-        return [];
-      }
-      return response.data.comments;
-    })
+    .then((response) => response.data.comments)
     .catch((error) => {
-      if (error.response && error.response.status === 404) {
-        return [];
+      if (error.response) {
+        if (error.response.status === 404) {
+          return []
+        } else {
+          console.error("Error in fetchComments:", error.response.data)
+          throw new Error('Error fetching comments: ' + error.response.data.message)
+        }
+      } else if (error.request) {
+        console.error("Error in fetchComments, no response;", error.request)
+        throw new Error('Error fetching comments: No response from server')
       } else {
-        throw error;
+        console.error('Error in fetchComments:', error.message)
+        throw new Error('Error fetching comments: ' + error.message)
       }
-    });
+    })
 };
 
 export const voteOnArticle = (article_id, inc_votes) => {
@@ -64,9 +68,18 @@ export const fetchUsers = () => {
 export const deleteComment = (comment_id) => {
   return api
     .delete(`/comments/${comment_id}`)
-    .then((response) => response.data)
+    .then(() => null)
     .catch((error) => {
-      throw error;
+      if (error.response) {
+        console.error('Error in deleteComment:', error.response.data)
+        throw new Error('Error deleting comment: ' + error.response.data.message)
+      }else if (error.request) {
+        console.error("Error in deleteComment, no response;", error.request)
+        throw new Error('Error deleting comment: No response from server')
+      } else {
+        console.error("Error in deleteComment;", error.message)
+        throw new Error('Error deleting comment:' + error.message)
+      }
     });
 };
 

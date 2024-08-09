@@ -8,7 +8,7 @@ const Login = ({ onLogin }) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-   fetchUsers()
+    fetchUsers()
       .then((usersData) => {
         setUsers(usersData);
         setSelectedUser(usersData[0]?.username || "");
@@ -22,28 +22,33 @@ const Login = ({ onLogin }) => {
   }, []);
 
   const handleLogin = (event) => {
-    event.preventDefault()
+    event.preventDefault();
     onLogin(selectedUser);
   };
 
-  if (loading) return <p>Loading users...</p>;
-  if (error) return <p>{error}</p>;
+  if (loading) return <p role="status" aria-live="polite">Loading users...</p>;
+  if (error) return <p role="alert" className="error">{error}</p>;
 
   return (
-    <div className="login">
-      <h2>Login</h2>
-      <select
-        value={selectedUser}
-        onChange={(e) => setSelectedUser(e.target.value)}
-        required
-      >
-        {users.map((user) => (
-          <option key={user.username} value={user.username}>
-            {user.username}
-          </option>
-        ))}
-      </select>
-      <button onClick={handleLogin}>Login</button>
+    <div className="login" aria-labelledby="login-heading">
+      <h2 id="login-heading">Login</h2>
+      <form onSubmit={handleLogin}>
+        <label htmlFor="user-select">Select a user:</label>
+        <select
+          id="user-select"
+          value={selectedUser}
+          onChange={(e) => setSelectedUser(e.target.value)}
+          required
+          aria-required="true"
+        >
+          {users.map((user) => (
+            <option key={user.username} value={user.username}>
+              {user.username}
+            </option>
+          ))}
+        </select>
+        <button type="submit" aria-busy={loading}>Login</button>
+      </form>
     </div>
   );
 };

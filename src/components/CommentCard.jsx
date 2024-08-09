@@ -6,21 +6,27 @@ const CommentCard = ({ comment_id, author, body, created_at, votes, loggedInUser
   };
 
   return (
-    <div className="comment-card">
-      <div className="comment-meta">
-        <span>{author}</span>
-        <span>{new Date(created_at).toLocaleDateString()}</span>
+    <article className="comment-card">
+      <header className="comment-meta">
+        <strong>{author}</strong>
+        <time dateTime={new Date(created_at).toISOString()}>
+          {new Date(created_at).toLocaleDateString()}
+        </time>
         {author === loggedInUser && (
-          <button onClick={handleDelete} className="delete-button">
+          <button
+            onClick={handleDelete}
+            className="delete-button"
+            aria-label={`Delete comment by ${author}`}
+          >
             Delete
           </button>
         )}
-      </div>
+      </header>
       <p>{body}</p>
-      <div className="comment-stats">
-        <span>Votes: {votes}</span>
-      </div>
-    </div>
+      <footer className="comment-stats">
+        <span aria-label={`${votes} votes`}>Votes: {votes}</span>
+      </footer>
+    </article>
   );
 };
 

@@ -17,13 +17,17 @@ const CommentList = ({ article_id, loggedInUser, comments, setComments }) => {
         })
         .catch((err) => {
           console.error(err);
-          setError("Failed to load comments. Please try again.");
+          if (err.message.includes("404")) {
+            setError("No comments found for this article.");
+          } else {
+            setError("Failed to load comments. Please try again.");
+          }
           setLoading(false);
         });
     } else {
       setLoading(false);
     }
-  }, [article_id, comments, setComments]);
+  }, [article_id, setComments]);
 
   const handleDelete = (comment_id) => {
     if (deleting) return;
@@ -45,13 +49,19 @@ const CommentList = ({ article_id, loggedInUser, comments, setComments }) => {
       });
   };
 
-  if (loading) return <p>Loading comments...</p>;
-  if (error) return <p>{error}</p>;
-  if (comments.length === 0) return <p className="no-comments">No comments yet. Be the first to comment!</p>;
+  if (loading) return <p role="status" aria-live="polite">Loading comments...</p>;
+  if (error) return <p role="alert" className="error">{error}</p>;
+  if (comments.length === 0)
+    return (
+      <p className="no-comments" role="status" aria-live="polite">
+        No comments yet. Be the first to comment!
+      </p>
+    );
 
   return (
-    <div className="comment-list">
-      {deleteSuccess && <p className="success">{deleteSuccess}</p>}
+    <section className="comment-list" aria-labelledby="comments-heading">
+      <h2 id="comments-heading">Comments</h2>
+      {deleteSuccess && <p role="status" className="success">{deleteSuccess}</p>}
       {comments.map((comment) => (
         <CommentCard
           key={comment.comment_id}
@@ -60,7 +70,7 @@ const CommentList = ({ article_id, loggedInUser, comments, setComments }) => {
           onDelete={handleDelete}
         />
       ))}
-    </div>
+    </section>
   );
 };
 

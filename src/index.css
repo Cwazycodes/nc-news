@@ -1,15 +1,67 @@
+:root {
+  --primary-color: #2a2a2a;
+  --secondary-color: #ffffff;
+  --accent-color: #ff6347;
+  --hover-color: #ff4500;
+  --background-color: #f4f4f4;
+  --border-color: #ccc;
+  --text-color: #555555;
+}
+
+body {
+  margin: 0;
+  font-family: "Roboto", sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  background-color: var(--background-color);
+  color: var(--primary-color);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Lato", sans-serif;
+  margin-bottom: 10px;
+  color: var(--primary-color);
+}
+
+a {
+  color: var(--accent-color);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.app {
+  text-align: center;
+}
+
 .app-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px;
-  background-color: #333333;
-  color: red;
+  padding: 16px 20px;
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
 .logo a {
   text-decoration: none;
-  color: white;
+  color: var(--secondary-color);
   font-size: 24px;
   font-weight: bold;
 }
@@ -19,6 +71,7 @@
   list-style: none;
   margin: 0;
   padding: 0;
+  gap: 16px;
 }
 
 .navigation li {
@@ -27,39 +80,38 @@
 
 .navigation a {
   text-decoration: none;
-  color: white;
+  color: var(--secondary-color);
   font-size: 18px;
 }
 
 .navigation a:hover {
   text-decoration: underline;
 }
-
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-}
-
-.app {
-  text-align: center;
+.app-header .logout-button {
+  margin-left: 20px;
 }
 
 .article-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  padding: 20px;
   justify-content: center;
 }
 
 .article-card {
   display: flex;
   flex-direction: column;
-  border: 1px solid #ccc;
+  border: 1px solid var(--border-color);
   border-radius: 8px;
+  background-color: var(--secondary-color);
   overflow: hidden;
-  width: 100%;
-  max-width: 300px;
-  margin: 16px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.article-card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .article-image {
@@ -76,16 +128,24 @@ body {
   display: flex;
   justify-content: space-between;
   margin-top: 8px;
+  font-size: 0.9em;
+  color: var(--text-color);
 }
 
 .article-detail {
-  margin: 20px;
+  margin: 20px auto;
+  max-width: 600px;
+  background-color: var(--secondary-color);
+  border-radius: 8px;
+  padding: 20px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .article-detail img.article-image {
   width: 100%;
   height: auto;
-  max-width: 600px;
+  border-radius: 8px;
 }
 
 .article-detail .article-stats {
@@ -96,21 +156,33 @@ body {
 
 .vote-buttons {
   margin-top: 10px;
+  display: flex;
+  gap: 10px;
 }
 
 .vote-buttons button {
-  margin-right: 10px;
-  padding: 5px 10px;
+  padding: 10px 20px;
   font-size: 16px;
   cursor: pointer;
+  background-color: var(--accent-color);
+  color: var(--secondary-color);
+  border: none;
+  border-radius: 5px;
+  transition: background 0.3s ease, transform 0.2s ease;
 }
 
 .vote-buttons button:hover {
-  background-color: #ddd;
+  background-color: var(--hover-color);
+  transform: scale(1.05);
+}
+
+button.voted {
+  background-color: #ffd700;
+  color: var(--primary-color);
 }
 
 .error {
-  color: red;
+  color: var(--accent-color);
   margin-top: 10px;
 }
 
@@ -124,16 +196,28 @@ body {
   margin-bottom: 10px;
   padding: 10px;
   font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid var(--border-color);
 }
 
 .comment-form button {
   padding: 10px 20px;
   font-size: 16px;
   cursor: pointer;
+  background-color: var(--accent-color);
+  color: var(--secondary-color);
+  border: none;
+  border-radius: 5px;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.comment-form button:hover {
+  background-color: var(--hover-color);
+  transform: scale(1.05);
 }
 
 .comment-form .error {
-  color: red;
+  color: var(--accent-color);
 }
 
 .comment-form .success {
@@ -145,54 +229,51 @@ body {
 }
 
 .comment-card {
-  border: 1px solid #ccc;
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 10px;
   margin-bottom: 10px;
-  background-color: #f9f9f9;
+  background-color: var(--background-color);
 }
 
 .comment-meta {
   display: flex;
   justify-content: space-between;
   font-size: 0.9em;
-  color: #555;
+  color: var(--text-color);
 }
 
 .delete-button {
-  background-color: red;
-  color: white;
+  background-color: var(--accent-color);
+  color: var(--secondary-color);
   border: none;
   padding: 5px 10px;
   border-radius: 5px;
   cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
 }
 
 .delete-button:hover {
-  background-color: darkred;
+  background-color: var(--hover-color);
+  transform: scale(1.05);
 }
 
 .no-comments {
   font-style: italic;
-  color: #555;
+  color: var(--text-color);
   text-align: center;
   margin-top: 20px;
 }
 
 button[disabled],
 .comment-form textarea[disabled] {
-  background-color: #ccc;
+  background-color: var(--border-color);
   cursor: not-allowed;
 }
 
 .loading {
   font-style: italic;
-  color: #555;
-}
-
-button.voted {
-  background-color: #ffd700;
-  color: #000;
+  color: var(--text-color);
 }
 
 .user-select-container {
@@ -210,7 +291,7 @@ button.voted {
 .user-select-dropdown {
   padding: 5px;
   border-radius: 5px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--border-color);
   font-size: 1em;
 }
 
@@ -227,30 +308,6 @@ button.voted {
   margin: 10px 0;
 }
 
-.articles-by-topic {
-  margin: 20px;
-}
-
-.articles-by-topic ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-.articles-by-topic li {
-  margin: 10px 0;
-  border-bottom: 1px solid #ccc;
-  padding-bottom: 10px;
-}
-
-.articles-by-topic h3 {
-  margin: 0;
-  font-size: 1.2em;
-}
-
-.articles-by-topic p {
-  margin: 5px 0;
-}
-
 .sort-controls {
   margin-top: 20px;
   margin-bottom: 20px;
@@ -258,6 +315,7 @@ button.voted {
   align-items: center;
   justify-content: center;
   gap: 10px;
+  padding: 20px 0;
 }
 
 .sort-controls label {
@@ -267,11 +325,60 @@ button.voted {
 .sort-controls select {
   padding: 5px;
   border-radius: 5px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--border-color);
+}
+
+.sort-loading {
+  margin-left: 1em;
+  font-size: 0.9em;
+  color: var(--text-color);
+}
+
+.app-footer {
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
+  padding: 20px;
+  text-align: center;
+}
+
+.footer-links {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.footer-links a {
+  color: var(--secondary-color);
+  text-decoration: none;
+}
+
+.footer-links a:hover {
+  text-decoration: underline;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
 }
 
 @media (min-width: 600px) {
   .article-list {
-    flex-direction: row;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+}
+
+@media (min-width: 900px) {
+  .article-list {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   }
 }

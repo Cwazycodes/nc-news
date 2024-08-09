@@ -33,16 +33,23 @@ const CommentForm = ({ article_id, username, onCommentPosted }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="comment-form">
+    <form onSubmit={handleSubmit} className="comment-form" aria-labelledby="comment-form-heading">
+      <h2 id="comment-form-heading">Leave a Comment</h2>
+      <label htmlFor="comment-body" className="sr-only">Comment</label>
       <textarea
+        id="comment-body"
         value={body}
         onChange={(e) => setBody(e.target.value)}
         placeholder="Write your comment here..."
         disabled={isPosting}
+        aria-required="true"
+        aria-invalid={error ? "true" : "false"}
       />
-      <button type="submit" disabled={isPosting}>Post Comment</button>
-      {error && <p className="error">{error}</p>}
-      {success && <p className="success">Comment posted successfully!</p>}
+      <button type="submit" disabled={isPosting} aria-busy={isPosting}>
+        {isPosting ? "Posting..." : "Post Comment"}
+      </button>
+      {error && <p role="alert" className="error">{error}</p>}
+      {success && <p role="status" className="success">Comment posted successfully!</p>}
     </form>
   );
 };
